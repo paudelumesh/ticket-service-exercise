@@ -61,3 +61,8 @@ Your assignment is to improve the implementation by adding the following feature
 * We would like to see a design that can scale to support multiple concurrent users. 
 * *Simple is better*. For example, a lazy seat expiration model may be a good alternative to a background thread or timer.
 * We understand that tradeoffs must be made to complete the exercise within the alloted time window. Do your best to document any simplifying assumptions and design considerations as you work through the problem.
+
+##Assumptions and Solutions
+Created a Seat domain class to hold its availability, togetherness and reservedState. This was required to find the grouped seating of the users. The isAvailable method in Seat Class does the lazy check on if the seat is available or not. 
+The check is done on the expiry time of the seat hold. The seat hold time is currently set to 5 second.
+The grouped Seating is done in getConsecutiveSeatsIds(int numSeats) Venue class. This will return the ids of seats that is available for holding in blocks. 
