@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,15 +19,29 @@ import static org.junit.Assert.assertFalse;
  */
 public class TicketServiceImplTest {
 
-    private static final Venue TEN_SEAT_VENUE = new Venue(0, 2, 5);
+    private static  Venue TEN_SEAT_VENUE ;
     private TicketService ticketService;
 
     @Before
     public void init() {
+    	TEN_SEAT_VENUE= new Venue(0, 2, 5);
         ticketService = new TicketServiceImpl(TEN_SEAT_VENUE);
     }
+    
+//    @Test
+//   public void testSimpleConsecutiveHold()
+//   {
+//    
+//    	
+//    	Optional <SeatHold> hold=ticketService.findAndHoldSeats(1);
+//    	Optional <SeatHold> hold1=ticketService.findAndHoldSeats(5);
+//    	Optional <SeatHold> hold2=ticketService.findAndHoldSeats(7);
+//  
+//    
+//    	
+//   }
 
-    @Test
+   @Test
     public void testSimpleSeatHold() {
         Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
         assertTrue(hold.isPresent());
@@ -78,7 +93,7 @@ public class TicketServiceImplTest {
     public void testEmptySeatHoldReturnedWhenVenueIsFull() {
         testMaxSeatHold();
         Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
-        assertTrue(!hold.isPresent());
+       assertTrue(!hold.isPresent());
     }
 
 }
