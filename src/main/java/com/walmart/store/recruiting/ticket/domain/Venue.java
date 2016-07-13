@@ -64,11 +64,13 @@ public class Venue {
     
     
     /**
-     * This method will give ids of consecutive ids, the consecutive ids can be in multiple rows, grouped by minimum people of two
-     * Getting consecutive seats
-     * @param numSeats
-     * @return
-     */
+	 * This method will give ids of consecutive ids, the consecutive ids can be
+	 * in multiple rows, grouped by minimum people of two Getting consecutive
+	 * seats
+	 * 
+	 * @param numSeats
+	 * @return
+	 */
     public int[] getConsecutiveSeatsIds(int numSeats)
     {
 		boolean continued=false;
@@ -116,14 +118,9 @@ public class Venue {
     	}
     	
     	return new int[0];
-    	
-    	
     }
     
-    public List<Seat> getSeats(int numSeats)
-    {
-    	return null;
-    }
+ 
     
     /**
      * Setting all the hold seats to unavailable
@@ -155,6 +152,10 @@ public class Venue {
     	}
     }
     
+    /**
+     * Mark the seat Reserved
+     * @param ids
+     */
     
     public void markSeatReserved(int [] ids)
     {

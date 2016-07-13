@@ -19,81 +19,95 @@ import static org.junit.Assert.assertFalse;
  */
 public class TicketServiceImplTest {
 
-    private static  Venue TEN_SEAT_VENUE ;
-    private TicketService ticketService;
+	private static Venue TEN_SEAT_VENUE;
+	private TicketService ticketService;
 
-    @Before
-    public void init() {
-    	TEN_SEAT_VENUE= new Venue(0, 2, 5);
-        ticketService = new TicketServiceImpl(TEN_SEAT_VENUE);
-    }
-    
-//    @Test
-//   public void testSimpleConsecutiveHold()
-//   {
-//    
-//    	
-//    	Optional <SeatHold> hold=ticketService.findAndHoldSeats(1);
-//    	Optional <SeatHold> hold1=ticketService.findAndHoldSeats(5);
-//    	Optional <SeatHold> hold2=ticketService.findAndHoldSeats(7);
-//  
-//    
-//    	
-//   }
+	@Before
+	public void init() {
+		TEN_SEAT_VENUE = new Venue(0, 2, 5);
+		ticketService = new TicketServiceImpl(TEN_SEAT_VENUE);
+	}
 
-   @Test
-    public void testSimpleSeatHold() {
-        Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
-        assertTrue(hold.isPresent());
-        assertNotNull(hold.get().getId());
-        assertEquals(1, hold.get().getNumSeats());
-        assertEquals(9, ticketService.numSeatsAvailable());
+	// @Test
+	// public void testSimpleConsecutiveHold()
+	// {
+	//
+	//
+	// Optional <SeatHold> hold=ticketService.findAndHoldSeats(1);
+	// Optional <SeatHold> hold1=ticketService.findAndHoldSeats(5);
+	// Optional <SeatHold> hold2=ticketService.findAndHoldSeats(7);
+	//
+	//
+	//
+	// }
 
-        hold = ticketService.findAndHoldSeats(5);
-        assertTrue(hold.isPresent());
-        assertNotNull(hold.get().getId());
-        assertEquals(5, hold.get().getNumSeats());
-        assertEquals(4, ticketService.numSeatsAvailable());
-    }
+	@Test
+	public void testSimpleSeatHold() {
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
+		assertTrue(hold.isPresent());
+		assertNotNull(hold.get().getId());
+		assertEquals(1, hold.get().getNumSeats());
+		assertEquals(9, ticketService.numSeatsAvailable());
 
-    @Test
-    public void testReserveSeats() {
-        Optional<SeatHold> hold = ticketService.findAndHoldSeats(5);
-        assertTrue(hold.isPresent());
-        assertNotNull(hold.get().getId());
-        assertEquals(5, hold.get().getNumSeats());
-        assertEquals(5, ticketService.numSeatsAvailable());
+		hold = ticketService.findAndHoldSeats(5);
+		assertTrue(hold.isPresent());
+		assertNotNull(hold.get().getId());
+		assertEquals(5, hold.get().getNumSeats());
+		assertEquals(4, ticketService.numSeatsAvailable());
+	}
 
-        Optional<String> reservationId = ticketService.reserveSeats(hold.get().getId());
-        assertTrue(reservationId.isPresent());
-        assertEquals(hold.get().getId(), reservationId.get());
-    }
+	@Test
+	public void testReserveSeats() {
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(5);
+		assertTrue(hold.isPresent());
+		assertNotNull(hold.get().getId());
+		assertEquals(5, hold.get().getNumSeats());
+		assertEquals(5, ticketService.numSeatsAvailable());
 
-    @Test
-    public void testReserveSeatsWithInvalidHold() {
-        Optional<String> reservationId = ticketService.reserveSeats("AAAA");
-        assertFalse(reservationId.isPresent());
-    }
+		Optional<String> reservationId = ticketService.reserveSeats(hold.get().getId());
+		assertTrue(reservationId.isPresent());
+		assertEquals(hold.get().getId(), reservationId.get());
+	}
 
-    @Test
-    public void testMaxSeatHold() {
-        Optional<SeatHold> hold = ticketService.findAndHoldSeats(10);
-        assertTrue(hold.isPresent());
-        assertNotNull(hold.get().getId());
-        assertEquals(10, hold.get().getNumSeats());
-    }
+	@Test
+	public void testReserveSeatsWithInvalidHold() {
+		Optional<String> reservationId = ticketService.reserveSeats("AAAA");
+		assertFalse(reservationId.isPresent());
+	}
 
-    @Test
-    public void testEmptySeatHoldReturnedWhenRequestExceedsCapacity() {
-        Optional<SeatHold> hold = ticketService.findAndHoldSeats(11);
-        assertTrue(!hold.isPresent());
-    }
+	@Test
+	public void testMaxSeatHold() {
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(10);
+		assertTrue(hold.isPresent());
+		assertNotNull(hold.get().getId());
+		assertEquals(10, hold.get().getNumSeats());
+	}
 
-    @Test
-    public void testEmptySeatHoldReturnedWhenVenueIsFull() {
-        testMaxSeatHold();
-        Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
-       assertTrue(!hold.isPresent());
-    }
+	@Test
+	public void testEmptySeatHoldReturnedWhenRequestExceedsCapacity() {
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(11);
+		assertTrue(!hold.isPresent());
+	}
+
+	@Test
+	public void testEmptySeatHoldReturnedWhenVenueIsFull() {
+		testMaxSeatHold();
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
+		assertTrue(!hold.isPresent());
+	}
+
+	@Test
+
+	public void testGroupedSeating() {
+		Optional<SeatHold> hold = ticketService.findAndHoldSeats(2);
+		Optional<SeatHold> hold2 = ticketService.findAndHoldSeats(5);
+		Optional<SeatHold> hold3 = ticketService.findAndHoldSeats(2);
+
+		assertTrue(hold2.isPresent());
+		assertNotNull(hold2.get().getId());
+		assertEquals(5, hold2.get().getNumSeats());
+		assertEquals(2, hold3.get().getNumSeats());
+
+	}
 
 }

@@ -5,6 +5,8 @@ import com.walmart.store.recruiting.ticket.domain.SeatHold;
 import com.walmart.store.recruiting.ticket.domain.Venue;
 import com.walmart.store.recruiting.ticket.service.TicketService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +40,11 @@ public class TicketServiceImpl implements TicketService {
 		return this.seatsReserved;
 	}
 
+	/**
+	 * Flow: I am using the ids of seats to hold the seats, if there are seats that are together, the Venue method will return the ids of the seats.
+	 * If there are not ids, this means we did not find any seats together, so we drop the holding for now.
+	 * If there are ids, we will create a seat hold with the ids, and mark the seats in the venues as not available. 
+	 */
 	@Override
 	public Optional<SeatHold> findAndHoldSeats(int numSeats) {
 		Optional<SeatHold> optionalSeatHold = Optional.empty();
@@ -53,11 +60,51 @@ public class TicketServiceImpl implements TicketService {
 				seatsAvailable -= numSeats;
 				venue.markSeatUnavailable(seatids);
 			}
+			else
+			{
+				/**
+				 * We did not get the seats in the bulk, lets try a recursive method of finding other seats by gruops
+				 */
+				
+				ArrayList<Integer> groupSeats=new ArrayList<>();
+				int procuredSeats=0;
+				int groupsize=numSeats-1;
+				while(procuredSeats<=numSeats&&groupsize>0)
+				{
+					int[] tmpseats = venue.getConsecutiveSeatsIds(groupsize);
+					if(tmpseats.length>0)
+					{
+						procuredSeats+=tmpseats.length;
+						for(int y:tmpseats)
+						{
+							groupSeats.add(y);
+						}
+					}
+					else
+					{
+						groupsize--;
+					}
+
+					
+				}
+				
+				if(groupSeats.size()==numSeats)
+				{
+					SeatHold seatHold = new SeatHold(holdId, numSeats,seatids);
+					optionalSeatHold = Optional.of(seatHold);
+					seatHoldMap.put(holdId, seatHold);
+					seatsAvailable -= numSeats;
+					int [] tmp=groupSeats.stream().mapToInt(it->it).toArray();
+					venue.markSeatUnavailable(tmp);
+				}
+			}
 
 		}
 
 		return optionalSeatHold;
 	}
+	
+
 
 	@Override
 	public Optional<String> reserveSeats(String seatHoldId) {
