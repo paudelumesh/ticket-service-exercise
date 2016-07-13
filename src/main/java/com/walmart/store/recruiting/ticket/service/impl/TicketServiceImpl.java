@@ -6,7 +6,6 @@ import com.walmart.store.recruiting.ticket.domain.Venue;
 import com.walmart.store.recruiting.ticket.service.TicketService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -84,7 +83,6 @@ public class TicketServiceImpl implements TicketService {
 					{
 						groupsize--;
 					}
-
 					
 				}
 				
